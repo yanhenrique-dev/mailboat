@@ -25,8 +25,25 @@ pub fn data_dir() -> Option<std::path::PathBuf> {
     #[cfg(windows)]
     let base = std::env::var_os("APPDATA").map(std::path::PathBuf::from);
     #[cfg(not(any(target_os = "macos", windows)))]
-    let base: Option<std::path::PathBuf> = None;
+    let base = linux_data_base(std::env::var_os("XDG_DATA_HOME"), std::env::var_os("HOME"));
     base.map(|b| b.join(ID))
+}
+
+/// Linux's data folder: `$XDG_DATA_HOME` when it holds an absolute path
+/// (the spec says a relative one is ignored), else `~/.local/share`, as
+/// Tauri reads it.
+#[cfg(not(any(target_os = "macos", windows)))]
+fn linux_data_base(
+    xdg_data_home: Option<std::ffi::OsString>,
+    home: Option<std::ffi::OsString>,
+) -> Option<std::path::PathBuf> {
+    if let Some(xdg) = xdg_data_home.filter(|v| !v.is_empty()) {
+        let xdg = std::path::PathBuf::from(xdg);
+        if xdg.is_absolute() {
+            return Some(xdg);
+        }
+    }
+    home.map(|home| std::path::PathBuf::from(home).join(".local/share"))
 }
 
 #[cfg(test)]
@@ -67,5 +84,29 @@ mod tests {
         assert!(parts
             .iter()
             .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')));
+    }
+
+    /// Linux reads its data folder the way the XDG spec says: an absolute
+    /// `$XDG_DATA_HOME`, else `~/.local/share` (a relative one is ignored).
+    #[cfg(not(any(target_os = "macos", windows)))]
+    #[test]
+    fn linux_reads_the_xdg_data_folder() {
+        use std::ffi::OsString;
+        let base = |xdg: Option<&str>, home: Option<&str>| {
+            linux_data_base(xdg.map(OsString::from), home.map(OsString::from))
+        };
+        assert_eq!(
+            base(Some("/data/share"), Some("/home/me")),
+            Some(std::path::PathBuf::from("/data/share"))
+        );
+        assert_eq!(
+            base(None, Some("/home/me")),
+            Some(std::path::PathBuf::from("/home/me/.local/share"))
+        );
+        assert_eq!(
+            base(Some("relative/dir"), Some("/home/me")),
+            Some(std::path::PathBuf::from("/home/me/.local/share"))
+        );
+        assert_eq!(base(None, None), None);
     }
 }
