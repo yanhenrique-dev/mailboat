@@ -6,13 +6,13 @@
 
 **All your Gmail accounts, in one calm inbox.**
 
-A fast, keyboard-first Gmail client for macOS and Windows. Free and open source.
+A fast, keyboard-first Gmail client for macOS, Windows and Linux. Free and open source.
 
 [![CI](https://github.com/nwoolls/mailboat/actions/workflows/ci.yml/badge.svg)](https://github.com/nwoolls/mailboat/actions/workflows/ci.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/nwoolls/mailboat/badge)](https://scorecard.dev/viewer/?uri=github.com/nwoolls/mailboat)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16828/badge)](https://www.bestpractices.dev/projects/16828)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
-![Platforms: macOS and Windows](https://img.shields.io/badge/platforms-macOS%20%7C%20Windows-blue)
+![Platforms: macOS, Windows and Linux](https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux-blue)
 ![Built with Tauri, Rust and React](https://img.shields.io/badge/built%20with-Tauri%20%C2%B7%20Rust%20%C2%B7%20React-orange)
 
 [Website](https://getmailboat.app) · [Get started](#get-started) · [Features](#why-mailboat) · [Privacy](#your-mail-stays-yours) · [Build from source](#build-from-source) · [Roadmap](docs/ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md)
@@ -206,7 +206,7 @@ app full of made-up mail, with no Google connection.
 | <kbd>⌘↩</kbd> | Send |
 | `?` | Every shortcut |
 
-On Windows, <kbd>Ctrl</kbd> takes the place of <kbd>⌘</kbd>.
+On Windows and Linux, <kbd>Ctrl</kbd> takes the place of <kbd>⌘</kbd>.
 
 ## How it's built
 
@@ -240,6 +240,11 @@ bun install
 bun tauri dev
 ```
 
+On Linux, install Tauri's system packages first (`libwebkit2gtk-4.1-dev`,
+`libgtk-3-dev`, `libsoup-3.0-dev` and `librsvg2-dev` on Debian and Ubuntu;
+`rpm` too for the `.rpm` package), then run the same two commands.
+`bun tauri build` makes a `.deb`, an `.rpm` and an AppImage.
+
 Windows is built from a Mac for now, and checked on Windows by CI. Checks, the
 test suite, demo mode and the rest are in
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
@@ -267,7 +272,8 @@ tokens stay in your keychain, and the AI features are fenced. See
 
 **Windows? Linux?**
 Mailboat runs on Windows: the releases page has a signed installer for x64 and
-one for Arm. Linux will follow.
+one for Arm. It builds and runs on Linux from source, which makes a `.deb`, an
+`.rpm` and an AppImage; Linux downloads aren't on the releases page yet.
 
 **What's next?**
 Version 0.3.0 brought printing, label colors, a reworked Toybox, sending a

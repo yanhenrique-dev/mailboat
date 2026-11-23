@@ -595,7 +595,11 @@ mod tests {
             brand::SHORT_NAME,
             "tauri.conf.json mainBinaryName"
         );
-        for file in ["tauri.conf.json", "tauri.windows.conf.json"] {
+        for file in [
+            "tauri.conf.json",
+            "tauri.windows.conf.json",
+            "tauri.linux.conf.json",
+        ] {
             for window in read(file)["app"]["windows"].as_array().unwrap() {
                 assert_eq!(window["title"], brand::NAME, "{file} window title");
             }

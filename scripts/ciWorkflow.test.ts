@@ -92,6 +92,10 @@ const appOnOs =
   (only: string): Rule =>
   (kind, os) =>
     appOnly(kind, os) && os === only;
+const appOnAllBut =
+  (except: string): Rule =>
+  (kind, os) =>
+    appOnly(kind, os) && os !== except;
 
 const EXPECTED: Record<string, { job: Rule; steps: Record<string, Rule> }> = {
   web: {
@@ -117,13 +121,15 @@ const EXPECTED: Record<string, { job: Rule; steps: Record<string, Rule> }> = {
     job: always,
     steps: {
       "actions/checkout": appOnly,
+      "sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libsoup-3.0-dev librsvg2-dev":
+        appOnOs("Linux"),
       "oven-sh/setup-bun": appOnly,
       "bun install --frozen-lockfile": appOnly,
       "dtolnay/rust-toolchain": appOnly,
       "Swatinem/rust-cache": appOnly,
       "cargo fmt --all --check": appOnly,
       "cargo clippy --workspace --all-targets -- -D warnings": appOnly,
-      "cargo test --workspace": appOnOs("macOS"),
+      "cargo test --workspace": appOnAllBut("Windows"),
       'bun scripts/make-sbom.ts --version 0.0.0 --out "$RUNNER_TEMP/sbom"': appOnOs("macOS"),
       "cargo test --workspace --exclude desktop --no-fail-fast": appOnOs("Windows"),
     },
@@ -161,7 +167,7 @@ describe("the CI's skips, evaluated", () => {
 
   for (const [name, rules] of Object.entries(EXPECTED)) {
     for (const kind of KINDS) {
-      for (const os of name === "rust" ? ["macOS", "Windows"] : ["macOS"]) {
+      for (const os of name === "rust" ? ["macOS", "Windows", "Linux"] : ["macOS"]) {
         const label = `${name} (${os}) when "What changed" says ${kind === "" ? "nothing" : kind}`;
         it(`${label}: the job and each step run exactly when they should`, () => {
           const job = byName[name];

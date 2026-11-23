@@ -1,7 +1,7 @@
 # Mailboat — agent instructions
 
-Mailboat is a cross-platform desktop Gmail client (macOS and Windows, Linux to
-follow). It uses the Gmail REST API directly, with a calm, minimal look
+Mailboat is a cross-platform desktop Gmail client (macOS, Windows and Linux).
+It uses the Gmail REST API directly, with a calm, minimal look
 (MonoCode × Notion Mail).
 
 Agents write all the code, so:
@@ -369,7 +369,8 @@ these rules. Keep it passing.
   (`accounts.oauth_client`) so a second, Internal client can be added later.
 - Credentials are never committed. The app reads Google's downloaded client
   JSON from `~/Library/Application Support/com.nwoolls.mailboat/google-oauth-client.json`
-  (Windows: `%APPDATA%\com.nwoolls.mailboat\`), or from env vars
+  (Windows: `%APPDATA%\com.nwoolls.mailboat\`; Linux:
+  `~/.config/com.nwoolls.mailboat/`), or from env vars
   `MAILBOAT_GOOGLE_CLIENT_ID` / `MAILBOAT_GOOGLE_CLIENT_SECRET`.
 - Respect quotas: batch requests, exponential backoff on 429/5xx. The
   owner's Cloud project allows 6,000 Gmail units per minute per user (not

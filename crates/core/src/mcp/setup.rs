@@ -32,7 +32,8 @@ pub fn claude_code_args(program: &str) -> Vec<String> {
 /// install (the owner's, 2026-10-25) reads its own private copy of
 /// `%APPDATA%`, inside `%LOCALAPPDATA%\Packages\Claude_*\LocalCache\Roaming`,
 /// so the app writing to the usual place went unseen; that copy is used
-/// when the app is installed that way.
+/// when the app is installed that way. On Linux it's in the app's folder
+/// under `$XDG_CONFIG_HOME`, like any Electron app's settings.
 pub fn claude_desktop_config() -> Option<PathBuf> {
     #[cfg(windows)]
     {
@@ -53,13 +54,26 @@ pub fn claude_desktop_config() -> Option<PathBuf> {
         let appdata = std::env::var_os("APPDATA")?;
         Some(PathBuf::from(appdata).join(r"Claude\claude_desktop_config.json"))
     }
-    #[cfg(not(windows))]
+    #[cfg(target_os = "macos")]
     {
         let home = std::env::var_os("HOME")?;
         Some(
             PathBuf::from(home)
                 .join("Library/Application Support/Claude/claude_desktop_config.json"),
         )
+    }
+    // Linux: an Electron app keeps its settings under `$XDG_CONFIG_HOME`
+    // (or `~/.config`), in a folder named after the app.
+    #[cfg(not(any(target_os = "macos", windows)))]
+    {
+        if let Some(config) = std::env::var_os("XDG_CONFIG_HOME")
+            .map(PathBuf::from)
+            .filter(|p| p.is_absolute())
+        {
+            return Some(config.join("Claude/claude_desktop_config.json"));
+        }
+        let home = std::env::var_os("HOME")?;
+        Some(PathBuf::from(home).join(".config/Claude/claude_desktop_config.json"))
     }
 }
 

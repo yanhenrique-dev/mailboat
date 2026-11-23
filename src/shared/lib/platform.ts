@@ -5,12 +5,28 @@
  * becomes Alt (Ctrl+Alt+S), as Windows apps pair them.
  */
 
-/** Read from the web view's user agent ("Macintosh" in WebKit, "Windows" in WebView2). */
-export function detectMac(userAgent: string): boolean {
-  return /Mac|darwin/.test(userAgent);
+/** The three systems the app builds for, as `data-platform` marks the page. */
+export type Platform = "mac" | "windows" | "linux";
+
+/**
+ * Read from the web view's user agent: "Macintosh" in macOS's WebKit,
+ * "Windows" in WebView2, "X11" or "Linux" in WebKitGTK.
+ */
+export function detectPlatform(userAgent: string): Platform {
+  if (/Mac|darwin/.test(userAgent)) return "mac";
+  if (/Windows/.test(userAgent)) return "windows";
+  return "linux";
 }
 
-export const IS_MAC = typeof navigator !== "undefined" && detectMac(navigator.userAgent);
+/** Whether the window runs on the Mac (the keyboard's ⌘). */
+export function detectMac(userAgent: string): boolean {
+  return detectPlatform(userAgent) === "mac";
+}
+
+export const PLATFORM: Platform =
+  typeof navigator === "undefined" ? "linux" : detectPlatform(navigator.userAgent);
+
+export const IS_MAC = PLATFORM === "mac";
 
 /** The key shortcuts are built on: ⌘ on the Mac, Ctrl elsewhere. */
 export function primaryKey(e: Pick<KeyboardEvent, "metaKey" | "ctrlKey">, mac = IS_MAC): boolean {

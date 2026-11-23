@@ -7,6 +7,7 @@ use std::process::{Command, Stdio};
 
 use mail_core::CoreError;
 
+#[cfg_attr(not(any(target_os = "macos", target_os = "windows")), allow(dead_code))]
 fn spawn(cmd: &mut Command) -> Result<(), CoreError> {
     cmd.stdin(Stdio::null())
         .stdout(Stdio::null())
