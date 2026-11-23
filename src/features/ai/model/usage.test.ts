@@ -19,8 +19,10 @@ describe("usage", () => {
   it("says how much of a plan limit is used", () => {
     const now = new Date(2026, 9, 20, 9, 0);
     const resets = new Date(2026, 9, 20, 15, 0).getTime() / 1000;
+    // The clock follows the machine's locale: a 24-hour one says 15:00 where
+    // en-US says 3:00 PM.
     expect(describeLimit({ window: "five_hour", used: 0.672, resetsAt: resets }, now)).toMatch(
-      /^67% of the 5-hour limit, resets 3:00/,
+      /^67% of the 5-hour limit, resets (3:00|15:00)/,
     );
     expect(describeLimit({ window: "seven_day", used: 0.1, resetsAt: null }, now)).toBe(
       "10% of the weekly limit",
