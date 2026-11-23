@@ -127,6 +127,13 @@ body {
   cursor: default;
 }
 
+/* Linux (WebKitGTK) has no window blur behind the glass, and a transparent
+   window would show whatever is behind it, so the base color is painted
+   here and the glass tints sit on top of it. */
+html[data-platform="linux"] body {
+  background: var(--color-background-base);
+}
+
 /* The rounded body panel that sits on the glass. Only a hairline edge, as
    in Tern: a soft shadow darkened the splitter gaps beside it. */
 .panel {
@@ -497,7 +504,10 @@ html.resizing .panel-slide {
 /* No custom scrollbar styling: macOS's own overlay scrollbars appear while
    scrolling and fade after, take no width, follow the light/dark
    color-scheme, and honour System Settings > Appearance > Show scroll
-   bars. Any ::-webkit-scrollbar rule would make them always visible. */
+   bars. Any ::-webkit-scrollbar rule would make them always visible.
+   Linux (WebKitGTK) draws its own overlay scrollbars, styled by the
+   desktop's GTK theme and following color-scheme too, so it wants none
+   either. */
 
 /* Windows (WebView2) draws classic scrollbars: always on, wide, with arrow
    buttons. There, thin rounded bars without arrows that only show while
