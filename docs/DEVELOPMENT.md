@@ -658,3 +658,9 @@ Curating the release notes); older sections stay as they were. Details:
 | AI usage | In the mail cache (`ai_usage`: sizes only, never prompts or answers) |
 | AI apps' socket | `~/Library/Application Support/com.nwoolls.mailboat/mcp.sock` (while Mailboat runs) |
 | AI apps' requests | In the mail cache (`mcp_log`: what was asked, never content; 30 days) |
+
+On Linux the same files follow the XDG spec: the mail cache, the MCP socket
+and the sync log (`logs/sync.log`) are under
+`~/.local/share/com.nwoolls.mailboat/`, the OAuth client file is under
+`~/.config/com.nwoolls.mailboat/`, and sign-in tokens are in the desktop's
+keychain, through Secret Service.
