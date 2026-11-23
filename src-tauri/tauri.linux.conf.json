@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "create": false,
+        "dragDropEnabled": false,
+        "title": "Mailboat",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 420,
+        "minHeight": 360,
+        "transparent": false
+      }
+    ]
+  },
+  "bundle": {
+    "targets": ["deb", "rpm", "appimage"],
+    "icon": ["icons/icon.png"],
+    "shortDescription": "All your Gmail accounts, in one calm inbox",
+    "longDescription": "A fast, keyboard-first Gmail client that talks to Gmail's API directly and keeps a local cache, so browsing and search are instant. One inbox for every account, with all the mail on this computer."
+  }
+}
