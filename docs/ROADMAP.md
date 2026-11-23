@@ -7494,6 +7494,19 @@ rest. The work done for 0.3.0 is in 0.3.0 → Security assessment (CASA).*
       the AUR, which needs a Linux build to point at first. The owner wants to take up Linux soon: after clearing some bugs, and together with a few
       features from this list, such as "add to Todoist and archive" and
       "Clone a sent email")*
+      *(2026-11-23: tried on a Linux desktop, in demo mode. It builds (`cargo
+      test` passes, clippy clean, demo mode opens) and `tauri.linux.conf.json`
+      makes a `.deb`, an `.rpm` and an AppImage: native decorations and the
+      theme's base color in place of the Mac's borderless glass;
+      `data_dir` reads `$XDG_DATA_HOME`; the MCP server uses its Unix socket;
+      Claude Desktop's file is read from `$XDG_CONFIG_HOME`; an Ubuntu runner
+      is in CI. Left: a release job and manifest entries for Linux (only the
+      AppImage can update itself), `mailto:` registration, a click on a
+      notification opening its conversation, the AUR package, and a fence for
+      Codex (macOS's sandbox has no Linux equivalent yet, so ChatGPT runs
+      there as it does on Windows). Tests also assumed a Mac and a 12-hour
+      locale: `only_connected_providers_are_used` and `usage.test.ts` now
+      check the platform's or locale's own answer)*
 
 - [ ] Keep translations after Mailboat quits *(known limitation, owner,
       2026-10-26: "for later")*: a translation in an email lives only in

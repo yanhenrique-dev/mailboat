@@ -13,6 +13,17 @@ Building, running and checking the app. For how it fits together, see
   Xcode → Settings → Accounts → Manage Certificates → + Apple Development),
   so macOS doesn't ask for keychain access after every rebuild.
 
+Linux builds too:
+
+- Tauri's system packages, on Debian and Ubuntu: `libwebkit2gtk-4.1-dev`,
+  `libgtk-3-dev`, `libsoup-3.0-dev` and `librsvg2-dev` (the same libraries
+  under other names on other distributions), plus `rpm` for the `.rpm`
+  package
+- A Secret Service provider for the keychain, such as GNOME Keyring or
+  KWallet, which is where sign-in tokens are kept
+- Apple Intelligence is a Mac feature; on Linux the AI features use Claude or
+  ChatGPT
+
 ## Run
 
 ```sh
@@ -155,6 +166,31 @@ goes in `%APPDATA%\com.nwoolls.mailboat\google-oauth-client.json`.
 The installer registers Mailboat as an email app. To have email links open
 it, choose Mailboat for `MAILTO` in Settings → Apps → Default apps (Mailboat's
 Settings → General → Email links opens that page).
+
+## Linux
+
+Mailboat builds and runs on Linux itself. Install the system packages
+listed in Requirements, then the usual commands:
+
+```sh
+bun install
+bun tauri dev     # the app, reloading as files change
+bun run demo      # full of made-up mail, no Google account
+bun tauri build   # a .deb, an .rpm and an AppImage, in target/release/bundle/
+```
+
+What works differently from the Mac:
+
+- Apple Intelligence isn't there (it's Apple's), so Settings → AI offers
+  Claude and ChatGPT only.
+- The window keeps its own title bar and buttons, and the base color is
+  painted behind the interface instead of a blurred desktop showing through
+  the glass (`tauri.linux.conf.json`, and the `data-platform="linux"` rule in
+  `src/styles/index.css`).
+- Email links don't reach the app yet: Settings → General says so, because
+  nothing registers `mailto:` on Linux.
+- ChatGPT's Codex runs without the sandbox macOS uses, as it does on
+  Windows. See [AI.md](AI.md) for what the sandbox keeps it away from.
 
 ## Check
 
